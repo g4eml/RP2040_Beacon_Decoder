@@ -65,10 +65,16 @@ void setup1()
 //Main Loop Core 0. Runs forever. Does most of the work.
 void loop() 
 {
+  uint8_t tn;
+  unsigned long inc;
+
   if(millis() >= loopTimer)
     {
-      loopTimer = loopTimer + 1000;
-      seconds++;
+      
+      inc = millis()-loopTimer;
+      inc = inc/1000;                 //how many seconds since last pass (should be 1)     
+      loopTimer = loopTimer + inc * 1000;
+      seconds = seconds + inc;
       if(seconds == 60)
         {
           minutes++;
@@ -82,8 +88,7 @@ void loop()
                   hours = 0;
                 }
             }
-        }
-        
+        }        
     }
 
   if(minutes > lastmin)                                         //every minute
@@ -96,41 +101,43 @@ void loop()
     }
    
    if(dmaReady)                                                 //Do we have a complete buffer of ADC samples ready?
-     {
+    {
       calcSpectrum();                                           //Perform the FFT of the data
       rp2040.fifo.push(GENPLOT);                                       //Ask Core 1 to generate data for the Displays from the FFT results.  
       rp2040.fifo.push(DRAWSPECTRUM);                           //Ask core 1 to draw the Spectrum Display
-      rp2040.fifo.push(DRAWWATERFALL);                          //Ask core 1 to draw the Waterfall Display
-      
-      toneCache[cachePoint] = toneDetect();                     //Detect which tone is present and add its index to the Tone cache
+      rp2040.fifo.push(DRAWWATERFALL);                          //Ask core 1 to draw the Waterfall Display      
+      tn=toneDetect();                                          //Detect which tone is present
 
-      rp2040.fifo.push(SHOWTONE + toneCache[cachePoint++]);     //Ask Core 1 to highlight the current tone. 
+      if(dmaActive)
+       {
+        toneCache[cachePoint] = tn;                     //Add the tone index to the Tone cache
 
-      if(cachePoint == cacheSize)                               //If the Cache is full (54 seconds of tones)
-        {
-          rp2040.fifo.push(REDLINE);                            //Ask core 1 to draw a Red horizontal line in the spectrum to mark the end of the Rx Period.
-          dmaActive = false;                                    //Ignore DMA transfers while we are decoding. 
-          cachePoint =0;                                        //Reset ready for the next period 
-          if(mode == JT4)
+        rp2040.fifo.push(SHOWTONE + toneCache[cachePoint++]);     //Ask Core 1 to highlight the current tone. 
+
+        if(cachePoint == cacheSize)                               //If the Cache is full (54 seconds of tones)
           {
-          if(JT4decodeCache())                                     //Try to extract the JT4 message from the 54 seconds of Tone cache.
+            rp2040.fifo.push(REDLINE);                            //Ask core 1 to draw a Red horizontal line in the spectrum to mark the end of the Rx Period.
+            dmaActive = false;                                    //Ignore DMA transfers while we are decoding. 
+            cachePoint =0;                                        //Reset ready for the next period 
+            if(mode == JT4)
             {
-              rp2040.fifo.push(JTMESSAGE);                         //Successfull decode. Ask Core 1 to display the received message  
-            }  
-          }
+              if(JT4decodeCache())                                     //Try to extract the JT4 message from the 54 seconds of Tone cache.
+                {
+                rp2040.fifo.push(JTMESSAGE);                         //Successfull decode. Ask Core 1 to display the received message  
+                }  
+            }
 
-        if(mode == PI4)
-          {
-          if(PI4decodeCache())                                     //Try to extract the JT4 message from the 54 seconds of Tone cache.
+            if(mode == PI4)
             {
-              rp2040.fifo.push(PIMESSAGE);                         //Successfull decode. Ask Core 1 to display the received message 
-            }  
-          }
-                                        
-        }
-      dmaReady = false;                                         //Clear the flag ready for next time
-     }
-
+              if(PI4decodeCache())                                     //Try to extract the JT4 message from the 54 seconds of Tone cache.
+                {
+                  rp2040.fifo.push(PIMESSAGE);                         //Successfull decode. Ask Core 1 to display the received message 
+                }  
+            }
+          }                               
+       }    
+      dmaReady = false;                                         //Clear the flag ready for next time     
+    }
 }
 
 
