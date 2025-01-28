@@ -72,7 +72,7 @@ The RP2040 is programmed using the Arduino IDE with the Earl F. Philhower, III  
 ### Installing the required libraries
 
 1. From the Arduino IDE select (Tools > Manage Libraries)
-2. Search for 'JTEncode' Scroll down to find the Etherkit JTEncode library by Jason Milldrum.
+2. Search for 'arduinoFFT' Scroll down to find the arduinoFFT library by Enrique Condes.
 3. Click Install
 4. Now search for 'TFT_eSPI' and find the TFT graphics library by Bodmer.
 5. Click Install
@@ -82,6 +82,11 @@ The RP2040 is programmed using the Arduino IDE with the Earl F. Philhower, III  
 1. Download the latest released source code .zip file from https://github.com/g4eml/RP2040_Beacon_Decoder/releases
 
 2. Save it to a convenient location and then unzip it. 
+
+The TFT_eSPI Library is unusual in that it needs to be configured to the TFT display in use by modifying library files. 
+The required modified versions of the files are located in the 'LCD-eSPI Settings' folder of this repository. 
+Copy the files 'User_Setup.h' and 'User_Setup_Select.h' from  the downloaded 'LCD-eSPI Settings' folder to your Arduino libraries directory.
+This will normaly be found at 'Documents/Arduino/libraries/TFT_eSPI'
 
 #### Programming the RP2040
 
@@ -126,7 +131,6 @@ The Sketch should compile and upload automatically to the Pico. If the upload fa
 The receiver audio is connected using a simple CR network to GPIO Pins GND, 3V£ and 28 on the top edge of the HMI Module. 
 Details of this interface are in this file.  ![Interface](Documents/Beacon_Decoder.pdf)
 
-
 The firmware supports the optional connection of a GPS module. This is used to accurately set the time, which is needed for the JT4 and PI4 modes. Any GPS module with a 3V3 output can be used. It needs to output NMEA data at 9600 Baud. One of the low cost NEO6M modules was used for development. 
 
 | HMI Module | GPS Module |
@@ -139,7 +143,5 @@ The firmware supports the optional connection of a GPS module. This is used to a
 
 
 ## Firmware description
-
-![IMG_20250128_153213](https://github.com/user-attachments/assets/03aa2664-4e03-447c-8963-0e05b1247c99)
 
 ## 
