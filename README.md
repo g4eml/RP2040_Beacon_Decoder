@@ -18,7 +18,40 @@ Supports JT4G and PI4 datat modes, as used by many VHF, UHF and Microwave Beacon
 
 Supports optional GPS connection for the accurate timing required for the JT4G and PI4 data modes. 
 
-## Requirements
+## Operation Description
+
+### Display
+The display is split into 4 main areas. On the left are the Spectrum display and Waterfall. These are used to tune the reciever to the correct frequency. 
+
+The Spectrum and Waterfall span from 300 Hz to 2200 Hz. Underneath the spectrum display there are 4 orange bands which indicate the correct frequencies for each of the 4 signal tones. The receiver needs to be tuned such that the received JT4G or PI4 tones fall withing these orange bands. 
+
+Tone 0 for JT4G is set to 800 Hz. 
+
+Tone 0 for PI4 is set to 684 Hz.
+
+When signals are being received one of the orange bands will turn green to indicate which of the 4 tones is being detected.
+
+A cyan horizontal line will be drawn across the Waterfall at the start of each 1 minute period. This indicates that signal capture has started and should occur just before the beacon starts to send its data. 
+
+A red horizontal line will be drawn across the Waterfall when the message is being decoded. This will be at about 48 seconds for JT4G and at about 28 Seconds for PI4. If the decode is successfullt the decoded message will be displayed on the right hand side of the screen. 
+
+The decoded message line will contain the time in Hours and Minutes. Then an estimate of the Signal to noise ratio. Then a Colon followed by the decoded message.  
+
+### Controls
+
+At the bottom of the screen there are 6 touch buttons. Only 4 of these are currently in use. 
+
+CLR  Clears the Message display.
+
+SYNC Performs a manual time synchronisation. The Seconds counter is reset to Zero and a new capture period is started.  This allows the module to be used without a GPS module. An accurate timesouce can be used and SYNC pressed at the exact start of the minute. Or alternatively it should be possible to manually synchronise with the start of the Beacons transmissions if they are audible.
+
+JT4G Select the JT4G mode.
+
+PI4 Selects the PI4 Mode.
+
+
+
+## Hardware Requirements
 
 This code is designed to work with the Elecrow CrowPanel Pico-3.5 inch 480x320 TFT LCD HMI Module. https://www.aliexpress.com/item/1005007250778536.html 
 
@@ -143,5 +176,33 @@ The firmware supports the optional connection of a GPS module. This is used to a
 
 
 ## Firmware description
+
+The firmware uses both cores of the RP2040 chip. 
+
+### Core 0 handles the time critical functions. 
+
+Audio is 32 times oversampled using the RP2040 built in ADC and the resulting samples are transfered to memory using DMA. 
+
+The samples are then averaged to reduce noise and reduce the number of samples to 1024. 
+
+The 1024 samples are then windowed and an FFT is performed on them. This results in 512 frequency Bins. 
+
+The frequency bins around each of the 4 signaling tones are then compared to identify which of the 4 tones is present. The resulting tone number is stored for later decoding. 
+
+This process is repeated for the entire duration of the JT4G or PI4 message.
+
+Once the entire message has been captured the saved tone information is scanned to find the best match with the known embedded sync pattern.
+
+If a reasonable sync match is found then the message bits are extracted and passed to the Fano Decoder which was written by KA9Q and K1JT. This analyses the received bits and applies error correction to try to reconstruct the original message. If the signal to noise ratio is good with minimal errors then this happens very quickly. A noisy signal takes longer but can often still be successfull. 
+
+These decoding steps are similar to but not the same as those used by the WJST-x software.  The limited memory space and processing power of the RP2040 means that some compromises have had to be made. The decoding accuracy is pretty good but very weak signals are not decoded as well as WJST-x can do. 
+
+### Core 1 of the RP2040 handles the LCD display and Touch Screen. 
+
+The LCD display is quite slow to update so it makes sense to keep those delays away from Core 0.
+
+Each set of FFT Bins is scaled and displayed as both a spectrum display and a waterfall. The decoded Messages are also displayed. 
+
+The touch screen inputs are also processed. 
 
 ## 
