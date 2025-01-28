@@ -92,7 +92,7 @@ This will normaly be found at 'Documents/Arduino/libraries/TFT_eSPI'
 
 1. Open the Arduino IDE and click File/Open
 
-2. Navigate to the File RP2404Synth/RP2040_LCD_Synth.ino (downloaded in the previous step) and click Open.
+2. Navigate to the File RP2404Synth/RP2040_Beacon_Decoder.ino (downloaded in the previous step) and click Open.
 
 3. Select Tools and make the following settings.
 
