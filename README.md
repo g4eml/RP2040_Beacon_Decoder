@@ -32,7 +32,7 @@ Data modes such as JT4G and PI4 need accurate timing information. Each transmiss
 
 ## Connecting
 
-The receiver is connected to the HMI module via a simple level shifting interface. Details are shown in this document 
+The receiver is connected to the HMI module via a simple level shifting interface. Details are shown in this document [Connections](Documents/Beacon_Decoder.pdf)
 
 The optional GPS module can be connected the UART1 connector on the lower edge of the MHI Module. 
 
