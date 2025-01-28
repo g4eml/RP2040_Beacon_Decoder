@@ -22,7 +22,7 @@ Supports optional GPS connection for the accurate timing required for the JT4G a
 
 This code is designed to work with the Elecrow CrowPanel Pico-3.5 inch 480x320 TFT LCD HMI Module. https://www.aliexpress.com/item/1005007250778536.html 
 
-
+![IMG_20250128_153213](https://github.com/user-attachments/assets/226fca54-6678-45e9-b151-74a64b49ffde)
 
 Note:- similar HMI Panels are available using the ESP32 processor chip. Make sure that you are purchasing the RP2040 version. 
  
@@ -32,7 +32,7 @@ Data modes such as JT4G and PI4 need accurate timing information. Each transmiss
 
 ## Connecting
 
-the module is connected to the receiver via a simple level shifting interface. Details are shown in this document 
+The receiver is connected to the HMI module via a simple level shifting interface. Details are shown in this document 
 
 The optional GPS module can be connected the UART1 connector on the lower edge of the MHI Module. 
 
@@ -123,6 +123,8 @@ The Sketch should compile and upload automatically to the Pico. If the upload fa
 
 ## Connections
 
+The receiver audio is connected using a simple CR network to GPIO Pins GND, 3V£ and 28 on the top edge of the HMI Module. 
+Details of this interface are in this file.  ![Interface](Documents/Beacon_Decoder.pdf)
 
 
 The firmware supports the optional connection of a GPS module. This is used to accurately set the time, which is needed for the JT4 and PI4 modes. Any GPS module with a 3V3 output can be used. It needs to output NMEA data at 9600 Baud. One of the low cost NEO6M modules was used for development. 
@@ -138,5 +140,6 @@ The firmware supports the optional connection of a GPS module. This is used to a
 
 ## Firmware description
 
+![IMG_20250128_153213](https://github.com/user-attachments/assets/03aa2664-4e03-447c-8963-0e05b1247c99)
 
 ## 
