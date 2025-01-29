@@ -66,32 +66,8 @@ void setup1()
 void loop() 
 {
   uint8_t tn;
-  unsigned long inc;
 
-  if(millis() >= loopTimer)
-    {
-      
-      inc = millis()-loopTimer;
-      inc = inc/1000;                 //how many seconds since last pass (should be 1)     
-      loopTimer = loopTimer + inc * 1000;
-      seconds = seconds + inc;
-      if(seconds == 60)
-        {
-          minutes++;
-          seconds = 0;
-          if(minutes == 60)
-            {
-              hours++;
-              minutes = 0;
-              if(hours == 24)
-                {
-                  hours = 0;
-                }
-            }
-        }        
-    }
-
-  if(minutes > lastmin)                                         //every minute
+  if(minutes != lastmin)                                         //every minute
     {
       lastmin = minutes;                                        //Save for next minute
       dmaActive = true;                                         //Enable DMA transfers. 
@@ -103,7 +79,7 @@ void loop()
    if(dmaReady)                                                 //Do we have a complete buffer of ADC samples ready?
     {
       calcSpectrum();                                           //Perform the FFT of the data
-      rp2040.fifo.push(GENPLOT);                                       //Ask Core 1 to generate data for the Displays from the FFT results.  
+      rp2040.fifo.push(GENPLOT);                                //Ask Core 1 to generate data for the Displays from the FFT results.  
       rp2040.fifo.push(DRAWSPECTRUM);                           //Ask core 1 to draw the Spectrum Display
       rp2040.fifo.push(DRAWWATERFALL);                          //Ask core 1 to draw the Waterfall Display      
       tn=toneDetect();                                          //Detect which tone is present
@@ -146,6 +122,29 @@ void loop1()
 {
   uint32_t command;
   char m[64];
+  unsigned long inc;
+ 
+  if(millis() >= loopTimer)
+    {         
+      loopTimer = loopTimer + 1000;
+      seconds++;
+      if(seconds == 60)
+        {
+          minutes++;
+          seconds = 0;
+          if(minutes == 60)
+            {
+              hours++;
+              minutes = 0;
+              if(hours == 24)
+                {
+                  hours = 0;
+                }
+            }
+        } 
+      showTime();                                   //display the time      
+    }
+
 
   if(rp2040.fifo.pop_nb(&command))          //have we got something to process from core 0?
     {
@@ -197,8 +196,11 @@ void loop1()
       processTouch();
     } 
 //synchronise the local clock to the GPS clock if available
-  if((gpsSec != -1) && (gpsActive) && (seconds != gpsSec))
+  int secErr = abs(seconds - gpsSec);
+  if((gpsSec != -1) && (gpsActive) && (secErr > 1) && (secErr < 58))
          {
+          Serial.println("Adjusting Clock");
+          loopTimer = millis() + 1000;
           seconds = gpsSec;
           minutes = gpsMin;
           hours = gpsHr;

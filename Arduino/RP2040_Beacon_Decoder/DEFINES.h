@@ -1,5 +1,3 @@
-#define DEBUG 1                       //send debug messages to USB Serial port. 
-
 #define GPSTXPin 4                      //Serial data to GPS module 
 #define GPSRXPin 5                      //SeriaL data from GPS module
 
@@ -71,7 +69,7 @@
 #define JT4TONESPACING 72                //tone spacing in number of bins. 315 / 4.375 = 72
 #define JT4TONE0 183                      //tone zero 183 * 4.375 = 800.625Hz 
 #define JT4TONETOLERANCE 22               //Tone tolerance 22 * 4.375 = +- 96Hz 
-#define JT4CACHESIZE 210                 // 210 tone decode samples is approx 48 Seconds
+#define JT4CACHESIZE 240                 // 240 tone decode samples is approx 55 Seconds
 #define JT4SYMBOLCOUNT 207              //number of symbols in JT4 message
 #define JT4BITCOUNT 206                 //number of bits in JT4 Message
 #define JT4HZPERBIN 4.375              //Hertz per bin. Used to generate displayed spectrum. 
@@ -83,7 +81,7 @@
 #define PI4TONESPACING 39               //tone spacing in number of bins. 234 / 6 = 39
 #define PI4TONE0 114                     //tone zero 114 * 6 = 684 Hz 
 #define PI4TONETOLERANCE 12               //Tone tolerance 12 * 6 = +- 72Hz 
-#define PI4CACHESIZE 168                // 168 tone decode samples is approx 28 Seconds
+#define PI4CACHESIZE 180                // 180 tone decode samples is approx 30 Seconds
 #define PI4SYMBOLCOUNT 146               //number of symbols in PI4 message
 #define PI4BITCOUNT 146                  //number of bits in PI4 Message
 #define PI4HZPERBIN 6                   //Hertz per bin. Used to generate displayed spectrum. 

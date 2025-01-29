@@ -68,7 +68,6 @@ for(int i = 0; i < cacheSize - (symbolCount) ; i++)       //starting index for t
    }
  }
 
-#ifdef DEBUG
   Serial.print("Sync Match at ");
   Serial.print((float) bestStartIndex * 0.0555);
   Serial.print(" Seconds. Sync Errors = ");
@@ -82,7 +81,6 @@ for(int i = 0; i < cacheSize - (symbolCount) ; i++)       //starting index for t
     }
   Serial.println();
  
-#endif
 
   return bestStartIndex;
 }
@@ -95,7 +93,6 @@ for(int i = 0; i < bitCount; i++)
      bits[i] = (toneCache[bestStartIndex + i] >> 1);
    }
 
-#ifdef DEBUG
   Serial.print("Interleaved Bits = ");
   for(int i = 0; i < bitCount; i++)
    {
@@ -103,7 +100,6 @@ for(int i = 0; i < bitCount; i++)
      Serial.print(" ");
    }
   Serial.println();
-#endif
 }
 
 void PI4deInterleave(uint8_t *bits)
@@ -116,7 +112,6 @@ void PI4deInterleave(uint8_t *bits)
   }
   memcpy(bits, d, bitCount);
  
- #ifdef DEBUG
    Serial.print("De-Interleaved Bits = ");
   for(int i = 0; i < bitCount; i++)
    {
@@ -124,7 +119,6 @@ void PI4deInterleave(uint8_t *bits)
      Serial.print(" ");
    }
   Serial.println();
-#endif
 }
 
 bool decodePI4(uint8_t *bits, unsigned char *dec)
@@ -142,7 +136,6 @@ bool decodePI4(uint8_t *bits, unsigned char *dec)
 
  int notDecoded = fano(&metric,&cycles,&maxnp, dec, bits, 74,42,20000);
 
-#ifdef DEBUG
   Serial.print("Decoded = ");
   if(notDecoded) 
   {
@@ -166,7 +159,6 @@ bool decodePI4(uint8_t *bits, unsigned char *dec)
     Serial.print(" ");
    }
    Serial.println();
-#endif
 
  return !notDecoded;
 
@@ -186,10 +178,8 @@ void PI4unpack(unsigned char *dec)
 
   N = N >> 22;
 
-#ifdef DEBUG
   Serial.print("Encoded = ");
   Serial.println(N);
-#endif
 
   for(int i = 7 ; i>= 0 ; i--)
   {
@@ -218,8 +208,6 @@ void PI4unpack(unsigned char *dec)
     }
    }
 
-#ifdef DEBUG
     Serial.print("Message = ");
     Serial.println(PImessage);
-#endif
 }

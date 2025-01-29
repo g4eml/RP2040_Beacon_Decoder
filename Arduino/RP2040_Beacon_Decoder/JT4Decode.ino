@@ -59,7 +59,6 @@ for(int i = 0; i < cacheSize - (symbolCount * overlap) ; i++)       //starting i
    }
  }
 
-#ifdef DEBUG
   Serial.print("Sync Match at ");
   Serial.print((float) bestStartIndex * 0.0762);
   Serial.print(" Seconds. Sync Errors = ");
@@ -77,7 +76,6 @@ for(int i = 0; i < cacheSize - (symbolCount * overlap) ; i++)       //starting i
    {
      Serial.println("Possible Error. First received bit was not a zero");
    }
-#endif
 
   return bestStartIndex;
 }
@@ -90,7 +88,6 @@ for(int i = 0; i < bitCount; i++)
      bits[i] = (toneCache[bestStartIndex + i* overlap + overlap] >> 1);
    }
 
-#ifdef DEBUG
   Serial.print("Interleaved Bits = ");
   for(int i = 0; i < bitCount; i++)
    {
@@ -98,7 +95,6 @@ for(int i = 0; i < bitCount; i++)
      Serial.print(" ");
    }
   Serial.println();
-#endif
 }
 
 void JT4deInterleave(uint8_t *bits)
@@ -111,7 +107,6 @@ void JT4deInterleave(uint8_t *bits)
   }
   memcpy(bits, d, bitCount);
  
- #ifdef DEBUG
    Serial.print("De-Interleaved Bits = ");
   for(int i = 0; i < bitCount; i++)
    {
@@ -119,7 +114,6 @@ void JT4deInterleave(uint8_t *bits)
      Serial.print(" ");
    }
   Serial.println();
-#endif
 }
 
 bool decodeFT4(uint8_t *bits, unsigned char *dec)
@@ -137,7 +131,6 @@ bool decodeFT4(uint8_t *bits, unsigned char *dec)
 
  int notDecoded = fano(&metric,&cycles,&maxnp, dec, bits, 104,60,20000);
 
-#ifdef DEBUG
   Serial.print("Decoded = ");
   if(notDecoded) 
   {
@@ -161,7 +154,6 @@ bool decodeFT4(uint8_t *bits, unsigned char *dec)
     Serial.print(" ");
    }
    Serial.println();
-#endif
 
  return !notDecoded;
 
@@ -241,8 +233,6 @@ void JT4unpack(unsigned char *dec)
     }
    }
 
-#ifdef DEBUG
     Serial.print("Message = ");
     Serial.println(JTmessage);
-#endif
 }

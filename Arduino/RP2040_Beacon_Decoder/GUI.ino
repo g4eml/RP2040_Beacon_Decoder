@@ -61,6 +61,18 @@ void textPrint(const char* message)
   textrow=textrow + tft.fontHeight();
 }
 
+void showTime(void)
+{
+  char t[20];
+  sprintf(t,"%02d:%02d:%02d",hours,minutes,seconds);
+  tft.fillRect(0,0,80,16,TFT_CYAN);
+  tft.setTextColor(TFT_BLACK);
+  tft.setFreeFont(&FreeSans9pt7b);
+  tft.setTextDatum(TL_DATUM);
+  tft.drawString(t,0,0);
+}
+
+
 void textLine(void)
 {
   if(textrow > 3)
